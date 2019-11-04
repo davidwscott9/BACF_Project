@@ -54,11 +54,10 @@ def BACF_optimized(params):
 
     # target size at the initial scale
     base_target_sz = target_sz / currentScaleFactor
-
     # window size, taking padding into account
     if params['search_area_shape'] == 'proportional':
         sz = np.floor(base_target_sz * search_area_scale)  # proportional area, same aspect ratio as the target
-    elif params['search_area_shape'] == ' square':
+    elif params['search_area_shape'] == 'square':
         sz = np.tile(m.sqrt(np.prod(base_target_sz * search_area_scale)), [1, 2])  # ignores target aspect ratio
     elif params['search_area_shape'] == 'fix_padding':
         sz = base_target_sz + m.sqrt(np.prod(base_target_sz * search_area_scale) +
