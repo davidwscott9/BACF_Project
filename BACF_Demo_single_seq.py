@@ -13,7 +13,8 @@ seq['VidName'] = video
 seq['st_frame'] = 1
 seq['en_frame'] = seq['len']
 
-gt_boxes = [ground_truth[:, 0:2], ground_truth[:, 0:2] + ground_truth[:, 2:4] - np.ones([ground_truth.shape[0], 2])]
+gt_boxes = np.concatenate([ground_truth[:, 0:2],
+                           ground_truth[:, 0:2] + ground_truth[:, 2:4] - np.ones([ground_truth.shape[0], 2])], axis=1)
 
 # Run BACF main function
 learning_rate = 0.013
@@ -21,7 +22,8 @@ results = run_BACF(seq, video_path, learning_rate)
 
 # compute the OP
 pd_boxes = results['res']
-pd_boxes = [pd_boxes[:, 0:2], pd_boxes[:, 0:2] + pd_boxes[:, 2:4] - np.ones([pd_boxes.shape[0], 2])]
+pd_boxes = np.concatenate([pd_boxes[:, 0:2],
+                           pd_boxes[:, 0:2] + pd_boxes[:, 2:4] - np.ones([pd_boxes.shape[0], 2])], axis=1)
 OP = np.zeros([gt_boxes.shape[0], 1])
 
 for i in range(0, gt_boxes.shape[0]):
