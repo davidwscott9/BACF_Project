@@ -143,7 +143,7 @@ def BACF_optimized(params):
     small_filter_sz = np.floor(base_target_sz / featureRatio)
 
     loop_frame = 0
-    for frame in range(0, s_frames.size):  # S_FRAMES NEEDS TO BE A NP ARRAY FOR .SIZE TO WORK
+    for frame in range(0, len(s_frames)):  # S_FRAMES NEEDS TO BE A NP ARRAY FOR .SIZE TO WORK
         try:
             im = cv2.imread(video_path + '/img/' + s_frames[frame])
         except:
