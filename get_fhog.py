@@ -1,6 +1,8 @@
 def get_fhog(im, fparam, gparam):
 
     import numpy as np
+    from fhog import fhog
+    from fhog_python import fhog_python
     nOrients = 9
 
     [im_height, im_width, num_in_chan, num_images] = im.shape
@@ -8,7 +10,9 @@ def get_fhog(im, fparam, gparam):
                              fparam['nDim'], num_images])
 
     for k in range(0, num_images):
-        hog_image = fhog((im[:, :, k]).astype('float32'), gparam['cell_size'], nOrients)
+        # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
+        # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
+        hog_image = fhog_python((im[:, :, k]).astype('float32'), gparam['cell_size'], nOrients, None, None)
 
         # the last dimension is all 0 so we can discard it
         feature_image[:, :, :, k] = hog_image[:, :, 0:-1]
