@@ -250,7 +250,7 @@ def BACF_optimized(params):
             [sx, sy, h] = get_subwindow_no_window(h, np.floor(use_sz / 2), small_filter_sz)
             t = np.zeros([use_sz[0], use_sz[1], h.shape[2]])
             t = t.astype('float32')
-            t[sx, sy, :] = h # SX AND SY SHOULD BE VALUE-1 FOR PROPER INDEXING
+            t[sx, sy, :] = h  # SX AND SY SHOULD BE VALUE-1 FOR PROPER INDEXING
             h_f = np.fft.fft2(t)
 
             # update L
