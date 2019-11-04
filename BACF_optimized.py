@@ -67,15 +67,15 @@ def BACF_optimized(params):
         raise ValueError('Unknown "search_area_shape". Must be "proportional", "square", or "fix_padding".')
 
     # set the size to exactly match the cell size
-    sz = np.round(sz / featureRatio) * featureRatio
+    sz = np.round(sz[0] / featureRatio) * featureRatio
     use_sz = np.floor(sz / featureRatio)
 
     # construct the label function- correlation output, 2D gaussian function, with a peak located upon the target
     output_sigma = m.sqrt(np.prod(np.floor(base_target_sz / featureRatio))) * output_sigma_factor
     rg = np.roll(np.arange(-1 * np.floor((use_sz[0] - 1) / 2), np.ceil((use_sz[0] - 1)/2) + 1),
-                 -1 * np.floor((use_sz[0] - 1) / 2), axis=1)  # THIS MAY BE A SOURCE OF AN ERROR LOTS OF CONVERTING HERE
+                 int(-1 * np.floor((use_sz[0] - 1) / 2)))
     cg = np.roll(np.arange(-1 * np.floor((use_sz[1] - 1) / 2), np.ceil((use_sz[1] - 1) / 2) + 1),
-                 -1 * np.floor((use_sz[1] - 1) / 2), axis=1)  # THIS MAY BE A SOURCE OF AN ERROR LOTS OF CONVERTING HERE
+                 int(-1 * np.floor((use_sz[1] - 1) / 2)))
     [rs, cs] = np.meshgrid(rg, cg)  # MAY BE ANOTHER CANDIDATE ERROR SOURCE
     rs = rs.T
     cs = cs.T
