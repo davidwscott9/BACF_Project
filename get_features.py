@@ -4,7 +4,10 @@ def get_features(image, features, gparams, fg_size):
     from get_fhog import get_fhog
     # IGNORING IF STATEMENT. ASSUMING IT JUST IS A PYTHON DICT
 
-    [im_height, im_width, num_im_chan, num_images] = image.shape
+    if len(image.shape) == 3:
+        [im_height, im_width, num_im_chan] = image.shape
+    else:
+        [im_height, im_width, num_im_chan, num_images] = image.shape
     colorImage = num_im_chan == 3
 
     # compute the total dimension of all features
