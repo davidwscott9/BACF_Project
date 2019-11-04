@@ -128,9 +128,9 @@ def BACF_optimized(params):
     if interpolate_response >= 3:
         # pre-computes the grid that is used for score optimization
         ky = np.roll(np.arange(-1 * np.floor((use_sz[0] - 1) / 2), np.ceil((use_sz[0] - 1) / 2) + 1),
-                     [1, -1 * np.floor((use_sz[0] - 1) / 2)], axis=[0, 1])
+                     int(-1 * np.floor((use_sz[0] - 1) / 2)))
         kx = np.roll(np.arange(-1 * np.floor((use_sz[1] - 1) / 2), np.ceil((use_sz[1] - 1) / 2) + 1),
-                     [1, -1 * np.floor((use_sz[1] - 1) / 2)], axis=[0, 1])
+                     int(-1 * np.floor((use_sz[1] - 1) / 2)))
         kx = kx.T  # MAKE SURE KX ACTUALLY AN NDARRAY AND NOT JUST 1D OTHERWISE TRANSPOSE WON"T WORK!
         newton_iterations = params['newton_iterations']
 
