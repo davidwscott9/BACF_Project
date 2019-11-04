@@ -2,7 +2,7 @@ def run_BACF(seq, video_path, lr):
 
     import math as m
     import numpy as np
-    # AT THE END OF THIS FUNCTION, COMPILE THE PARAMS.xxx VARIABLES INTO A DICTIONARY params = {'xx': xx, 'xxx', xxx...}
+    from BACF_optimized import BACF_optimized
     # Default parameters used in the ICCV 2017 BACF paper
 
     # HOG feature parameters
@@ -13,13 +13,13 @@ def run_BACF(seq, video_path, lr):
     grayscale_params = {'colorspace': colorspace, 'nDim': nDim}
 
     # Global feature parameters
-    t_features = {'getFeature': FUNCTION HERE??, 'fparams': hog_params}
+    t_features = {'fparams': hog_params}  # Omitted the 'GetFeatures' key. Just using FHog when appropriate.
     cell_size = 4  # feature cell size
-    cell_selection_thresh = 0.75^2  # threshold for reducing the cell size in low-resolution cases
+    cell_selection_thresh = 0.75**2  # threshold for reducing the cell size in low-resolution cases
     t_global = {'cell_size': cell_size, 'cell_selection_thresh': cell_selection_thresh}
 
     # Search region + extended background parameters
-    search_area_shape = 'square' #  shape of the training/detection window: 'proportional', 'square', or 'fix_padding'
+    search_area_shape = 'square' # shape of the training/detection window: 'proportional', 'square', or 'fix_padding'
     search_area_scale = 5  # the size of the training/detection area proportional to the target size
     filter_max_area = 50^2  # the size of the training/detection area in feature grid cells
 
@@ -28,7 +28,8 @@ def run_BACF(seq, video_path, lr):
     output_sigma_factor = 1/16  # standard deviation of the desired correlation output (proportional to target)
 
     # Detection parameters
-    interpolate_response = 4  # correlation score interpolation strategy: 0 - off, 1 - feature grid, 2 - pixel grid, 4 - Newton's method
+    # correlation score interpolation strategy: 0 - off, 1 - feature grid, 2 - pixel grid, 4 - Newton's method
+    interpolate_response = 4
     newton_iterations = 50  # number of Newton's iteration to maximize the detection scores
 
     # Scale parameters

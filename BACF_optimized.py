@@ -6,6 +6,12 @@ def BACF_optimized(params):
     import time
     import matplotlib.pyplot as plt
     import matplotlib.patches as patches
+
+    from resizeDFT2 import resizeDFT2
+    from get_pixels import get_pixels
+    from get_features import get_features
+    from resp_newton import resp_newton
+    from get_subwindow_no_window import get_subwindow_no_window
     # Setting parameters for local use.
     search_area_scale = params['search_area_scale']
     output_sigma_factor = params['output_sigma_factor']
@@ -75,7 +81,7 @@ def BACF_optimized(params):
     rs = rs.T
     cs = cs.T
     # MAY NEED TO CONVERT VARIABLES TO NP ARRAYS IF GETTING ERRORS BECAUSE I'M USING NP.POWER, etc.
-    y = m.exp(-0.5 * ((np.power(rs, 2) + np.power(cs, 2)) / np.power(output_sigma, 2)))
+    y = np.exp(-0.5 * ((np.power(rs, 2) + np.power(cs, 2)) / np.power(output_sigma, 2)))
     yf = np.fft.fft2(y)  # fast fourier transform of y
 
     if interpolate_response == 1:
@@ -210,7 +216,7 @@ def BACF_optimized(params):
         pixels = get_pixels(im, pos, np.round(sz*currentScaleFactor), sz)
 
         # extract features and do windowing
-        xf = np.fft.fft2(np.multiply(get_features(pixels, features, global_feat_params), cos_window))
+        xf = np.fft.fft2(np.multiply(get_features(pixels, features, global_feat_params, None), cos_window))
 
         if frame == 0:
             model_xf = xf

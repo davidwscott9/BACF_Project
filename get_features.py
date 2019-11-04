@@ -1,6 +1,7 @@
 def get_features(image, features, gparams, fg_size):
 
     import numpy as np
+    from get_fhog import get_fhog
     # IGNORING IF STATEMENT. ASSUMING IT JUST IS A PYTHON DICT
 
     [im_height, im_width, num_im_chan, num_images] = image.shape
