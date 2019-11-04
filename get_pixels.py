@@ -12,7 +12,7 @@ def get_pixels(im, pos, sz, resize_target):
     ys[ys > im.shape[0]] = im.shape[0]
 
     # extract image
-    im_patch = im[min(ys):max(ys)+1, min(xs):max(xs)+1, :]
-    resized_patch = cv2.resize(im_patch, (resize_target[0], resize_target[1]))
+    im_patch = im[int(min(ys)):int(max(ys))+1, int(min(xs)):int(max(xs)+1), :]
+    resized_patch = cv2.resize(im_patch, (int(resize_target[0]), int(resize_target[1])))
 
     return resized_patch
