@@ -139,7 +139,7 @@ def BACF_optimized(params):
     ## time = 0
 
     # allocate memory for multi-scale tracking
-    multires_pixel_template = np.zeros([sz[0], sz[1], im.shape[2], nScales], dtype=np.uint8)
+    multires_pixel_template = np.zeros([int(sz[0]), int(sz[1]), im.shape[2], nScales], dtype=np.uint8)
     small_filter_sz = np.floor(base_target_sz / featureRatio)
 
     loop_frame = 0
