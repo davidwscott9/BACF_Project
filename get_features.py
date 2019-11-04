@@ -25,7 +25,7 @@ def get_features(image, features, gparams, fg_size):
             fg_size = [np.floor(im_height / gparams['cell_size']), np.floor(im_width / gparams['cell_size'])]
 
     # IGNORING CELL_SIZE < 0 CASE BECAUSE WHEN WOULD THAT HAPPEN???
-    feature_pixels = np.zeros([fg_size[0], fg_size[1], tot_feature_dim, num_images])
+    feature_pixels = np.zeros([int(fg_size[0]), int(fg_size[1]), tot_feature_dim, num_images])
     feature_pixels[:, :, 0:tot_feature_dim, :] = get_fhog(image, features['fparams'], gparams)
     support_sz = [im_height, im_width]
 
