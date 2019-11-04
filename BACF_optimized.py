@@ -98,11 +98,14 @@ def BACF_optimized(params):
     # IF SOMETHING IS WRONG HERE, MIGHT BE ABLE TO CIRCUMVENT THE TRY/EXCEPT BY ENSURING IMAGE FILES ARE WELL FORMATTED
     try:
         im = cv2.imread(video_path + '/img/' + s_frames[0])
+        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
     except:
         try:
             im = cv2.imread(s_frames[0])
+            im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         except:
             im = cv2.imread(video_path + '/' + s_frames[0])
+            im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
 
     if im.shape[2] == 3:
         if np.all(np.equal(im[:,:,0], im[:,:,1])):
@@ -146,11 +149,14 @@ def BACF_optimized(params):
     for frame in range(0, len(s_frames)):  # S_FRAMES NEEDS TO BE A NP ARRAY FOR .SIZE TO WORK
         try:
             im = cv2.imread(video_path + '/img/' + s_frames[frame])
+            im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         except:
             try:
                 im = cv2.imread(s_frames[frame])
+                im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
             except:
                 im = cv2.imread(video_path + '/' + s_frames[frame])
+                im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
 
         if im.shape[2] > 1 and colorImage is False:
             im = im[:,:,0]
