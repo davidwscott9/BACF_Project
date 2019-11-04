@@ -123,8 +123,7 @@ def BACF_optimized(params):
         scale_exp = np.arange(-1 * np.floor((nScales - 1) / 2), np.ceil((nScales - 1) / 2) + 1)
         scaleFactors = scale_step ** scale_exp
         min_scale_factor = scale_step ** np.ceil(m.log(max(np.divide(5, sz))) / m.log(scale_step))
-        max_scale_factor = scale_step ** np.floor(m.log(min([im.shape[0]/base_target_sz,
-                                                            im.shape[1]/base_target_sz])) / m.log(scale_step))
+        max_scale_factor = scale_step ** np.floor(m.log(min(np.divide([im.shape[0], im.shape[1]], base_target_sz))) / m.log(scale_step))
 
     if interpolate_response >= 3:
         # pre-computes the grid that is used for score optimization
