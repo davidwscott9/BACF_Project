@@ -40,7 +40,7 @@ def run_BACF(seq, video_path, lr):
     wsize = np.array([seq['init_rect'][3], seq['init_rect'][2]])
     init_pos = np.array([seq['init_rect'][1], seq['init_rect'][0]]) + np.floor(wsize / 2)
     s_frames = seq['s_frames']
-    no_frame = seq['en_frame'] - seq['st_frame'] + 1
+    no_fram = seq['en_frame'] - seq['st_frame'] + 1
     seq_st_frame = seq['st_frame']
     seq_en_frame = seq['en_frame']
 
@@ -58,7 +58,7 @@ def run_BACF(seq, video_path, lr):
               'output_sigma_factor': output_sigma_factor, 'interpolate_response': interpolate_response,
               'newton_iterations': newton_iterations, 'number_of_scales': number_of_scales,
               'scale_step': scale_step, 'wsize': wsize, 'init_pos': init_pos, 's_frames': s_frames,
-              'no_frames': no_frame, 'seq_st_frame': seq_st_frame, 'seq_en_frame': seq_en_frame,
+              'no_fram': no_fram, 'seq_st_frame': seq_st_frame, 'seq_en_frame': seq_en_frame,
               'admm_iterations': admm_iterations, 'admm_lambda': admm_lambda, 'visualization': visualization}
 
     # run the main function

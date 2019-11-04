@@ -28,7 +28,7 @@ def BACF_optimized(params):
     target_sz = np.floor(params['wsize'])
 
     visualization = params['visualization']
-    num_frames = params['no_frame']
+    num_frames = params['no_fram']
     init_target_sz = target_sz
 
     # Set the features ratio to the feature-cell size

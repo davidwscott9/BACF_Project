@@ -14,7 +14,7 @@ def gradientMag(I, channel, normRad, normConst, full):
     if I is not None:
         M = gradientMex('gradientMag', I, channel, full)
     else:
-        [M,O] = gradientMex('gradientMag', I, channel, full)
+        [M, O] = gradientMex('gradientMag', I, channel, full)
 
     if normRad == 0:
         return

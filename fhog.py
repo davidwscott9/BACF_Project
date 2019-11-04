@@ -1,4 +1,7 @@
 def fhog(I, binSize, nOrients, clip, crop):
+
+    from gradientMag import gradientMag
+    from gradientHist import gradientHist
     if binSize is None:
         binSize = 8
     if nOrients is None:
