@@ -21,7 +21,7 @@ def run_BACF(seq, video_path, lr):
     # Search region + extended background parameters
     search_area_shape = 'square'  # shape of the training/detection window: 'proportional', 'square', or 'fix_padding'
     search_area_scale = 5  # the size of the training/detection area proportional to the target size
-    filter_max_area = 50^2  # the size of the training/detection area in feature grid cells
+    filter_max_area = 50**2  # the size of the training/detection area in feature grid cells
 
     # Learning Parameters
     learning_rate = lr  # learning rate
