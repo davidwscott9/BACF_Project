@@ -5,7 +5,11 @@ def get_fhog(im, fparam, gparam):
     from fhog_python import fhog_python
     nOrients = 9
 
-    [im_height, im_width, num_in_chan, num_images] = im.shape
+    if len(im.shape) == 3:
+        [im_height, im_width, num_im_chan] = im.shape
+        num_images = 1
+    else:
+        [im_height, im_width, num_im_chan, num_images] = im.shape
     feature_image = np.zeros([np.floor(im_height, gparam['cell_size']), np.floor(im_width / gparam['cell_size']),
                              fparam['nDim'], num_images])
 
