@@ -10,8 +10,8 @@ def get_fhog(im, fparam, gparam):
         num_images = 1
     else:
         [im_height, im_width, num_im_chan, num_images] = im.shape
-    feature_image = np.zeros([np.floor(im_height, gparam['cell_size']), np.floor(im_width / gparam['cell_size']),
-                             fparam['nDim'], num_images])
+    feature_image = np.zeros([int(np.floor(im_height / gparam['cell_size'])),
+                              int(np.floor(im_width / gparam['cell_size'])), fparam['nDim'], num_images])
 
     for k in range(0, num_images):
         # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
