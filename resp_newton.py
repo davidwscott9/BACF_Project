@@ -21,8 +21,8 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
     max_pos_x = init_pos_x
 
     # pre-compute complex exponential
-    exp_iky = m.exp(np.multiply(1j * ky, max_pos_y))
-    exp_ikx = m.exp(np.multiply(1j * kx, max_pos_x))
+    exp_iky = np.exp(np.multiply(1j * ky, max_pos_y))
+    exp_ikx = np.exp(np.multiply(1j * kx, max_pos_x))
 
     ky2 = np.multiply(ky, ky)
     kx2 = np.multiply(kx, kx)
@@ -46,8 +46,8 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
         max_pos_x = max_pos_x - np.divide((np.multiply(H_yy, grad_x) - np.multiply(H_xy, grad_y)), det_H)
 
         # Evaluate maximum
-        exp_iky = m.exp(np.multiply(1j * ky, max_pos_y))
-        exp_ikx = m.exp(np.multiply(1j * kx, max_pos_x))
+        exp_iky = np.exp(np.multiply(1j * ky, max_pos_y))
+        exp_ikx = np.exp(np.multiply(1j * kx, max_pos_x))
 
         counter += 1
 
