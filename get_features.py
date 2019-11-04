@@ -6,6 +6,7 @@ def get_features(image, features, gparams, fg_size):
 
     if len(image.shape) == 3:
         [im_height, im_width, num_im_chan] = image.shape
+        num_images = 1
     else:
         [im_height, im_width, num_im_chan, num_images] = image.shape
     colorImage = num_im_chan == 3
