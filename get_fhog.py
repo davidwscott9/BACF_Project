@@ -13,12 +13,22 @@ def get_fhog(im, fparam, gparam):
     feature_image = np.zeros([int(np.floor(im_height / gparam['cell_size'])),
                               int(np.floor(im_width / gparam['cell_size'])), fparam['nDim'], num_images])
 
-    for k in range(0, num_images):
+    if num_images == 1:
         # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
         # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
-        hog_image = fhog_python((im[:, :, k]).astype('float32'), gparam['cell_size'], nOrients, None, None)
+        hog_image = fhog_python(np.uint8(im[:, :, :]), gparam['cell_size'], nOrients, None, None)
 
         # the last dimension is all 0 so we can discard it
-        feature_image[:, :, :, k] = hog_image[:, :, 0:-1]
+        feature_image[:, :, :] = hog_image[:, :, 0:-1]
+
+    else:
+        for k in range(0, num_images):
+            # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
+            # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
+            hog_image = fhog_python(np.uint8(im[:, :, k]), gparam['cell_size'], nOrients, None, None)
+
+            # the last dimension is all 0 so we can discard it
+            feature_image[:, :, :, k] = hog_image[:, :, 0:-1]
+
 
     return feature_image
