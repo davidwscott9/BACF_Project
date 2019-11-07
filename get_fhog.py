@@ -18,8 +18,9 @@ def get_fhog(im, fparam, gparam):
         # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
         hog_image = fhog_python(np.uint8(im[:, :, :]), gparam['cell_size'], nOrients, None, None)
 
-        # the last dimension is all 0 so we can discard it
-        feature_image[:, :, :] = hog_image[:, :, 0:-1]
+        # # the last dimension is all 0 so we can discard it
+        # feature_image[:, :, :] = hog_image[:, :, 0:-1]
+        feature_image = hog_image # I'm just using standard HOG so feature vector is 9 long, not 32
 
     else:
         for k in range(0, num_images):
