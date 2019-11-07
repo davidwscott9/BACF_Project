@@ -16,6 +16,6 @@ def get_subwindow_no_window(im, pos, sz):
     ys[ys > im.shape[0]] = im.shape[0]
 
     # extract image
-    out = im[min(ys):max(ys)+1, min(xs):max(xs)+1, :]
+    out = im[int(min(ys)):int(max(ys))+1, int(min(xs)):int(max(xs))+1, :]
 
     return yys, xxs, out
