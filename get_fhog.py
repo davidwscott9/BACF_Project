@@ -26,10 +26,11 @@ def get_fhog(im, fparam, gparam):
         for k in range(0, num_images):
             # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
             # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
-            hog_image = fhog_python(np.uint8(im[:, :, k]), gparam['cell_size'], nOrients, None, None)
+            hog_image = fhog_python(np.uint8(im[:, :, :, k]), gparam['cell_size'], nOrients, None, None)
 
             # the last dimension is all 0 so we can discard it
-            feature_image[:, :, :, k] = hog_image[:, :, 0:-1]
+            # feature_image[:, :, :, k] = hog_image[:, :, 0:-1]
+            feature_image = hog_image # I'm just using standard HOG so feature vector is 9 long, not 32
 
 
     return feature_image

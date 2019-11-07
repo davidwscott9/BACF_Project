@@ -220,7 +220,11 @@ def BACF_optimized(params):
         pixels = get_pixels(im, pos, np.round(sz*currentScaleFactor), sz)
 
         # extract features and do windowing
-        xf = np.fft.fft2(np.multiply(get_features(pixels, features, global_feat_params, None), cos_window))
+        feat_term, _ = get_features(pixels, features, global_feat_params, None)
+        mult_term = np.zeros([feat_term.shape[0], feat_term.shape[1], feat_term.shape[2]])
+        for i in range(0, feat_term.shape[2]):
+            mult_term[:, :, i] = np.multiply(feat_term[:, :, i, 0], cos_window)
+        xf = np.fft.fft2(mult_term)
 
         if frame == 0:
             model_xf = xf
@@ -237,14 +241,14 @@ def BACF_optimized(params):
         i = 1
 
         T = np.prod(use_sz)
-        S_xx = np.sum(np.multiply(model_xf.conj(), model_xf, axis=2))
+        S_xx = np.sum(np.multiply(model_xf.conj(), model_xf), axis=2)
         params['admm_iterations'] = 2
 
         while i <= params['admm_iterations']:
             # Solve for G
             B = S_xx + (T * mu)
-            S_lx = np.sum(np.multiply(model_xf.conj(), l_f, axis=2))
-            S_hx = np.sum(np.multiply(model_xf.conj(), h_f, axis=2))
+            S_lx = np.sum(np.multiply(model_xf.conj(), l_f), axis=2)
+            S_hx = np.sum(np.multiply(model_xf.conj(), h_f), axis=2)
             g_f = (((1 / (T * mu)) * np.multiply(yf, model_xf)) - ((1 / mu) * l_f) + h_f) - \
                   np.divide((((1 / (T * mu)) * np.multiply(model_xf, np.multiply(S_xx, yf))) -
                              ((1 / mu) * np.multiply(model_xf, S_lx)) + (np.multiply(model_xf, S_hx))), B)

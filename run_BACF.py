@@ -6,7 +6,7 @@ def run_BACF(seq, video_path, lr):
     # Default parameters used in the ICCV 2017 BACF paper
 
     # HOG feature parameters
-    hog_params = {'nDim': 31}
+    hog_params = {'nDim': 9}  # 9 if HOG, 31 if FHOG
     # Grayscale feature parameters (DON"T THINK THESE ARE EVER USED)
     colorspace = 'gray'
     nDim = 1
