@@ -4,8 +4,8 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
     import math as m
     max_resp_row = np.amax(response, axis=0)
     max_row = np.argmax(response, axis=0)
-    init_max_response = np.amax(max_resp_row, axis=1)
-    max_col = np.argmax(max_resp_row.T, axis=1)
+    init_max_response = np.amax(max_resp_row, axis=0)
+    max_col = np.argmax(max_resp_row, axis=0)
     col = max_col
 
     row = np.zeros(len(col))
@@ -21,23 +21,23 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
     max_pos_x = init_pos_x
 
     # pre-compute complex exponential
-    exp_iky = np.exp(np.multiply(1j * ky, max_pos_y))
-    exp_ikx = np.exp(np.multiply(1j * kx, max_pos_x))
+    exp_iky = np.exp(np.multiply(1j * ky.reshape(1,-1)[:,:,None], max_pos_y.reshape(1,1,-1)))
+    exp_ikx = np.exp(np.multiply(1j * kx.reshape(-1,1)[:,:,None], max_pos_x.reshape(1,1,-1)))
 
     ky2 = np.multiply(ky, ky)
     kx2 = np.multiply(kx, kx)
 
     counter = 1
     while counter <= iterations:
-        ky_exp_ky = np.multiply(ky, exp_iky)
-        kx_exp_kx = np.multiply(kx, exp_ikx)
+        ky_exp_ky = np.multiply(ky.reshape(1,-1)[:,:,None], exp_iky)
+        kx_exp_kx = np.multiply(kx.reshape(-1,1)[:,:,None], exp_ikx)
         y_resp = np.einsum('mnr,ndr->mdr', exp_iky, responsef)  # use this instead of mtimesx
         resp_x = np.einsum('mnr,ndr->mdr', responsef, exp_ikx)
         grad_y = -np.imag(np.einsum('mnr,ndr->mdr', ky_exp_ky, resp_x))
         grad_x = -np.imag(np.einsum('mnr,ndr->mdr', y_resp, kx_exp_kx))
         ival = 1j * np.einsum('mnr,ndr->mdr', exp_iky, resp_x)
-        H_yy = np.real(-1*np.einsum('mnr,ndr->mdr', np.multiply(kx2, exp_iky), resp_x) + ival)
-        H_xx = np.real(-1*np.einsum('mnr,ndr->mdr', y_resp, np.multiply(kx2, exp_ikx)) + ival)
+        H_yy = np.real(-1*np.einsum('mnr,ndr->mdr', np.multiply(ky2.reshape(1,-1)[:,:,None], exp_iky), resp_x) + ival)
+        H_xx = np.real(-1*np.einsum('mnr,ndr->mdr', y_resp, np.multiply(kx2.reshape(-1,1)[:,:,None], exp_ikx)) + ival)
         H_xy = np.real(-1*np.einsum('mnr,ndr->mdr', ky_exp_ky, np.einsum('mnr,ndr->mdr', responsef, kx_exp_kx)))
         det_H = np.multiply(H_yy, H_xx) - np.multiply(H_xy, H_xy)
 
@@ -46,8 +46,8 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
         max_pos_x = max_pos_x - np.divide((np.multiply(H_yy, grad_x) - np.multiply(H_xy, grad_y)), det_H)
 
         # Evaluate maximum
-        exp_iky = np.exp(np.multiply(1j * ky, max_pos_y))
-        exp_ikx = np.exp(np.multiply(1j * kx, max_pos_x))
+        exp_iky = np.exp(np.multiply(1j * ky.reshape(1,-1)[:,:,None], max_pos_y))
+        exp_ikx = np.exp(np.multiply(1j * kx.reshape(-1,1)[:,:,None], max_pos_x))
 
         counter += 1
 
@@ -55,10 +55,10 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
                                                            np.einsum('mnr,ndr->mdr', exp_iky, responsef), exp_ikx))
 
     # check for scales that have not increased in score
-    ind = max_response < init_max_response
-    max_response[ind] = init_max_response[ind]
-    max_pos_y[ind] = init_pos_y[ind]
-    max_pos_x[ind] = init_pos_x[ind]
+    ind = max_response[0,0,:] < init_max_response
+    max_response[0,0,ind] = init_max_response[ind]
+    max_pos_y[0,0,ind] = init_pos_y[ind]
+    max_pos_x[0,0,ind] = init_pos_x[ind]
 
     sind = np.argmax(max_response)
     disp_row = ((max_pos_y[0, 0, sind] + m.pi) % (2 * m.pi) - m.pi) / (2 * m.pi) * use_sz[0]
