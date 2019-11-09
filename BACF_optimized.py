@@ -81,7 +81,7 @@ def BACF_optimized(params):
     cs = cs.T
     # MAY NEED TO CONVERT VARIABLES TO NP ARRAYS IF GETTING ERRORS BECAUSE I'M USING NP.POWER, etc.
     y = np.exp(-0.5 * ((np.power(rs, 2) + np.power(cs, 2)) / np.power(output_sigma, 2)))
-    yf = np.fft.fft2(y)  # fast fourier transform of y
+    yf = np.fft.fft2(y)  # fast fourier transform of y --> SAME AS MATLAB
 
     if interpolate_response == 1:
         interp_sz = use_sz * featureRatio
@@ -92,7 +92,7 @@ def BACF_optimized(params):
     term1 = np.array([np.hanning(use_sz[0])])
     term2 = np.array([np.hanning(use_sz[1])])
     cos_window = np.matmul(term1.T, term2)
-    cos_window = cos_window.astype('float32')
+    cos_window = cos_window.astype('float32')  # --> SAME AS MATLAB
 
     # Calculate feature dimension
     # IF SOMETHING IS WRONG HERE, MIGHT BE ABLE TO CIRCUMVENT THE TRY/EXCEPT BY ENSURING IMAGE FILES ARE WELL FORMATTED
@@ -126,14 +126,16 @@ def BACF_optimized(params):
         scale_exp = np.arange(-1 * np.floor((nScales - 1) / 2), np.ceil((nScales - 1) / 2) + 1)
         scaleFactors = scale_step ** scale_exp
         min_scale_factor = scale_step ** np.ceil(m.log(max(np.divide(5, sz))) / m.log(scale_step))
-        max_scale_factor = scale_step ** np.floor(m.log(min(np.divide([im.shape[0], im.shape[1]], base_target_sz))) / m.log(scale_step))
+        max_scale_factor = scale_step ** np.floor(m.log(min(np.divide([im.shape[0],
+                                                                       im.shape[1]],
+                                                                      base_target_sz))) / m.log(scale_step))  # --> SAME AS MATLAB
 
     if interpolate_response >= 3:
         # pre-computes the grid that is used for score optimization
         ky = np.roll(np.arange(-1 * np.floor((use_sz[0] - 1) / 2), np.ceil((use_sz[0] - 1) / 2) + 1),
                      int(-1 * np.floor((use_sz[0] - 1) / 2)))
         kx = np.roll(np.arange(-1 * np.floor((use_sz[1] - 1) / 2), np.ceil((use_sz[1] - 1) / 2) + 1),
-                     int(-1 * np.floor((use_sz[1] - 1) / 2)))
+                     int(-1 * np.floor((use_sz[1] - 1) / 2)))  # --> SAME AS MATLAB
         kx = kx.T  # MAKE SURE KX ACTUALLY AN NDARRAY AND NOT JUST 1D OTHERWISE TRANSPOSE WON"T WORK!
         newton_iterations = params['newton_iterations']
 
@@ -143,7 +145,7 @@ def BACF_optimized(params):
 
     # allocate memory for multi-scale tracking
     multires_pixel_template = np.zeros([int(sz[0]), int(sz[1]), im.shape[2], nScales], dtype=np.uint8)
-    small_filter_sz = np.floor(base_target_sz / featureRatio)
+    small_filter_sz = np.floor(base_target_sz / featureRatio)  # --> SAME AS MATLAB
 
     loop_frame = 0
     for frame in range(0, len(s_frames)):  # S_FRAMES NEEDS TO BE A NP ARRAY FOR .SIZE TO WORK
@@ -161,7 +163,7 @@ def BACF_optimized(params):
         if im.shape[2] > 1 and colorImage is False:
             im = im[:,:,0]
 
-        t = time.time()   # LATER USE elapsed = time.time() - t
+        start_time = time.time()   # LATER USE elapsed = time.time() - t
         elapsed = 0
 
         # do not estimate translation and scaling on the first frame, since we just want to initialize the tracker there
@@ -170,10 +172,9 @@ def BACF_optimized(params):
                 multires_pixel_template[:, :, :, scale_ind] = \
                     get_pixels(im, pos, np.round(sz * currentScaleFactor * scaleFactors[scale_ind]), sz)
 
-            xtf = np.fft.fft2(np.multiply(get_features(multires_pixel_template,
-                                                       features, global_feat_params), cos_window))
-            mat1 = np.sum(np.multiply(np.conj(g_f), xtf), axis=2)
-            responsef = np.reshape(mat1, [mat1.shape[0], mat1.shape[1], mat1.shape[3], mat1.shape[2]])
+            feat_term2, _ = get_features(multires_pixel_template, features, global_feat_params, None)
+            xtf = np.fft.fft2(np.multiply(feat_term2, cos_window[:,:,None,None]))
+            responsef = np.sum(np.multiply(np.conj(g_f)[:,:,:,None], xtf), axis=2)
 
             # if we undersampled features, we want to interpolate the response to have the same size as the image patch
             if interpolate_response == 2:
@@ -183,12 +184,12 @@ def BACF_optimized(params):
             responsef_padded = resizeDFT2(responsef, interp_sz)
 
             # response in the spatial domain
-            response = np.fft.ifft2(responsef_padded) # MAY HAVE AN ISSUE HERE NOT BEING SYMMETRIC
+            response = np.real(np.fft.ifft2(responsef_padded))  # MAY HAVE AN ISSUE HERE NOT BEING SYMMETRIC -- therefore added real
 
             # find maximum peak
             if interpolate_response == 3:
                 raise ValueError('Invalid parameter value for "interpolate_response"')
-            elif interpolate_response == 4: # IF GETTING AN ERROR WITH SIND, MAY BE BECAUSE IT NEEDS TO INDEX AT SIND-1
+            elif interpolate_response == 4:  # IF GETTING AN ERROR WITH SIND, MAY BE BECAUSE IT NEEDS TO INDEX AT SIND-1
                 [disp_row, disp_col, sind] = resp_newton(response, responsef_padded, newton_iterations, ky, kx, use_sz)
             # MAY NOT NEED THIS  SECTION. TOO MANY CONVERSIONS. SKIPPING FOR NOW. SEEMS LIKE interpolate_response = 4 always
             #else:
@@ -196,7 +197,7 @@ def BACF_optimized(params):
 
             # calculate translation
             if interpolate_response == 0 or 3 or 4:
-                translation_vec = np.round([disp_row, disp_col] * featureRatio *
+                translation_vec = np.round(np.array([disp_row, disp_col]) * featureRatio *
                                            currentScaleFactor * scaleFactors[sind])
             elif interpolate_response == 1:
                 translation_vec = np.round([disp_row, disp_col] * currentScaleFactor * scaleFactors[sind])
@@ -255,7 +256,7 @@ def BACF_optimized(params):
             [sx, sy, h] = get_subwindow_no_window(h, np.floor(use_sz / 2), small_filter_sz)
             t = np.zeros([int(use_sz[0]), int(use_sz[1]), h.shape[2]])
             t = t.astype('float32')
-            t[sx, sy, :] = h  # SX AND SY SHOULD BE VALUE-1 FOR PROPER INDEXING
+            t[int(sx[0]):int(sx[-1])+1, int(sy[0]):int(sy[-1])+1, :] = h
             h_f = np.fft.fft2(t)
 
             # update L
@@ -270,7 +271,7 @@ def BACF_optimized(params):
         # save position and calculate FPS
         rect_position[loop_frame, :] = np.concatenate((pos[1::-1] - np.floor(target_sz[1::-1] / 2), target_sz[1::-1]))  # should be 1x4
 
-        elapsed = elapsed + (time.time() - t)
+        elapsed = elapsed + (time.time() - start_time)
 
         # visualization
         if visualization == 1:
@@ -278,7 +279,7 @@ def BACF_optimized(params):
             im_to_show = im / 255
             if im_to_show.shape[2] == 1:
                 np.tile(im_to_show, [1, 1, 3])
-            if frame == 1:
+            if frame == 0:
                 fig, ax = plt.subplots(1, num='Tracking')
                 ax.imshow(im_to_show)  # MATLAB CODE HAS IMAGESC INSTEAD OF IMSHOW. HOPEFULLY NOT A BIG DIFFERENCE
                 rect = patches.Rectangle(rect_position_vis[0:2], rect_position_vis[2], rect_position_vis[3],
@@ -295,8 +296,8 @@ def BACF_optimized(params):
                 sc_ind = np.floor((nScales - 1) / 2)  # NOT INCLUDING PLUS 1 SINCE IT'S AN INDEX
 
                 ax.imshow(im_to_show)
-                im_overlay = np.fft.fftshift(response[:,:,sc_ind])
-                ax.imshow(im_overlay, extent=[xs, xs + im_overlay.shape[1], ys, ys + im_overlay[0]],
+                im_overlay = np.fft.fftshift(response[:,:,int(sc_ind)])
+                ax.imshow(im_overlay, extent=[xs[0], xs[-1], ys[0], ys[-1]],
                           alpha=0.2, cmap='hsv')
                 rect = patches.Rectangle(rect_position_vis[0:2], rect_position_vis[2], rect_position_vis[3],
                                          linewidth=2, edgecolor='g', facecolor='none')
@@ -305,6 +306,7 @@ def BACF_optimized(params):
                 FPS_str = 'FPS: ' + str(1 / (elapsed / loop_frame))
                 ax.annotate(frame_str, [20, 30], color='r', backgroundcolor='w')
                 ax.annotate(FPS_str, [20, 60], color='r', backgroundcolor='w', fontsize=16)
+                np.zeros(1,2)
 
         loop_frame += 1
 
