@@ -218,11 +218,11 @@ def BACF_optimized(params):
             pos = pos + translation_vec
 
         # extract training sample image region
-        pixels = get_pixels(im, pos, np.round(sz*currentScaleFactor), sz)
+        pixels = get_pixels(im, pos, np.round(sz*currentScaleFactor), sz)  # --> SAME AS MATLAB ON FRAME = 0
 
         # extract features and do windowing
-        feat_term, _ = get_features(pixels, features, global_feat_params, None)
-        xf = np.fft.fft2(np.multiply(feat_term[:,:,:,0], cos_window[:,:,None]))
+        feat_term, _ = get_features(pixels, features, global_feat_params, None)  # --> DISCREPANCY FROM MATLAB
+        xf = np.fft.fft2(np.multiply(feat_term[:,:,:,0], cos_window[:,:,None]))  # THE FFT2 is causing a difference!!!
         if frame == 0:
             model_xf = xf
         else:
@@ -306,7 +306,7 @@ def BACF_optimized(params):
                 FPS_str = 'FPS: ' + str(1 / (elapsed / loop_frame))
                 ax.annotate(frame_str, [20, 30], color='r', backgroundcolor='w')
                 ax.annotate(FPS_str, [20, 60], color='r', backgroundcolor='w', fontsize=16)
-                np.zeros(1,2)
+            np.zeros(1,2)
 
         loop_frame += 1
 
