@@ -221,8 +221,12 @@ def BACF_optimized(params):
         pixels = get_pixels(im, pos, np.round(sz*currentScaleFactor), sz)  # --> SAME AS MATLAB ON FRAME = 0
 
         # extract features and do windowing
+        # With numpy, passing a matrix with dimensions > 2 yields totally different results than in MATLAB. Need to
+        # loop it over 3 dimensional term so as to only pass through dims at a time.
         feat_term, _ = get_features(pixels, features, global_feat_params, None)  # --> DISCREPANCY FROM MATLAB
-        xf = np.fft.fft2(np.multiply(feat_term[:,:,:,0], cos_window[:,:,None]))  # THE FFT2 is causing a difference!!!
+        xf = np.zeros([feat_term.shape[1], feat_term.shape[1], feat_term.shape[2]])
+        for n in range(0, feat_term.shape[2]):
+            xf[:,:,n] = np.fft.fft2(np.multiply(feat_term[:,:,n,0], cos_window[:,:]))  # THE FFT2 is causing a difference!!!
         if frame == 0:
             model_xf = xf
         else:
