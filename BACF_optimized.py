@@ -179,23 +179,25 @@ def BACF_optimized(params):
                     xtf[:,:,m,n] = np.fft.fft2(np.multiply(feat_term2[:,:,m,n], cos_window[:,:]))  # --> SAME AS MATLAB
             responsef = np.sum(np.multiply(np.conj(g_f)[:,:,:,None], xtf), axis=2)  # --> SAME AS MATLAB
 
-            np.zeros(1,2)
-
             # if we undersampled features, we want to interpolate the response to have the same size as the image patch
             if interpolate_response == 2:
                 # use dynamic interp size
                 interp_sz = np.floor(y.shape * featureRatio * currentScaleFactor)
 
-            responsef_padded = resizeDFT2(responsef, interp_sz)
+            responsef_padded = resizeDFT2(responsef, interp_sz)  # --> SAME AS MATLAB
 
+            response = np.zeros(responsef_padded.shape)
             # response in the spatial domain
-            response = np.real(np.fft.ifft2(responsef_padded))  # MAY HAVE AN ISSUE HERE NOT BEING SYMMETRIC -- therefore added real
+            for n in range(0, responsef.shape[2]):
+                response[:,:,n] = np.real(np.fft.ifft2(responsef_padded[:,:,n]))  # MAY HAVE AN ISSUE HERE NOT BEING SYMMETRIC -- therefore added real --> SAME AS MATLAB :D :)
+
 
             # find maximum peak
             if interpolate_response == 3:
                 raise ValueError('Invalid parameter value for "interpolate_response"')
             elif interpolate_response == 4:  # IF GETTING AN ERROR WITH SIND, MAY BE BECAUSE IT NEEDS TO INDEX AT SIND-1
                 [disp_row, disp_col, sind] = resp_newton(response, responsef_padded, newton_iterations, ky, kx, use_sz)
+
             # MAY NOT NEED THIS  SECTION. TOO MANY CONVERSIONS. SKIPPING FOR NOW. SEEMS LIKE interpolate_response = 4 always
             #else:
                # [row, col, sind] = np.unravel_index(response.shape, find)
