@@ -191,7 +191,6 @@ def BACF_optimized(params):
             for n in range(0, responsef.shape[2]):
                 response[:,:,n] = np.real(np.fft.ifft2(responsef_padded[:,:,n]))  # MAY HAVE AN ISSUE HERE NOT BEING SYMMETRIC -- therefore added real --> SAME AS MATLAB :D :)
 
-
             # find maximum peak
             if interpolate_response == 3:
                 raise ValueError('Invalid parameter value for "interpolate_response"')
@@ -233,7 +232,7 @@ def BACF_optimized(params):
         feat_term, _ = get_features(pixels, features, global_feat_params, None)  # --> DISCREPANCY FROM MATLAB
         xf = np.zeros([feat_term.shape[1], feat_term.shape[1], feat_term.shape[2]], dtype=complex)
         for n in range(0, feat_term.shape[2]):
-            xf[:,:,n] = np.fft.fft2(np.multiply(feat_term[:,:,n,0], cos_window[:,:]))  # THE FFT2 is causing a difference!!!
+            xf[:,:,n] = np.fft.fft2(np.multiply(feat_term[:,:,n,0], cos_window[:,:]))
         if frame == 0:
             model_xf = xf
         else:
