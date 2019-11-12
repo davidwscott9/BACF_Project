@@ -324,6 +324,9 @@ def BACF_optimized(params):
 
         loop_frame += 1
 
+        if frame == 1:
+            np.zeros(1,2)
+
     # Save results
     fps = loop_frame / elapsed
     results = {'type': 'rect', 'res': rect_position, 'fps': fps}

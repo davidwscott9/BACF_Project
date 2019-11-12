@@ -1,7 +1,9 @@
 def resizeDFT2(inputdft, desiredSize):
 
     import numpy as np
-    [imh, imw, n1, n2] = inputdft.shape
+
+    [imh, imw, n1] = inputdft.shape
+    n2 =1  # This could be a potential error source, but I think n2 will always be 1
     imsz = [imh, imw]
 
     if desiredSize[0] != imsz[0] or desiredSize[1] != imsz[1]:
