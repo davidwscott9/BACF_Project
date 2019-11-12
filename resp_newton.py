@@ -7,10 +7,12 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
     init_max_response = np.amax(max_resp_row, axis=0)
     max_col = np.argmax(max_resp_row, axis=0)
     col = max_col
+    col = col + 1  # match MATLAB indexing for now
 
     row = np.zeros(len(col))
     for i in range(0, len(col)):
         row[i] = max_row[col[i], i]
+    row = row + 1  # match MATLAB indexing for now
 
     trans_row = (row - 1 + np.floor((use_sz[0] - 1) / 2)) % use_sz[0] - np.floor((use_sz[0] - 1) / 2)
     trans_col = (col - 1 + np.floor((use_sz[1] - 1) / 2)) % use_sz[1] - np.floor((use_sz[1] - 1) / 2)
@@ -25,7 +27,8 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
     exp_ikx = np.exp(np.multiply(1j * kx.reshape(-1,1)[:,:,None], max_pos_x.reshape(1,1,-1)))
 
     ky2 = np.multiply(ky, ky)
-    kx2 = np.multiply(kx, kx)
+    kx2 = np.multiply(kx, kx)  # --> SAME AS MATLAB
+
 
     counter = 1
     while counter <= iterations:
@@ -63,5 +66,6 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
     sind = np.argmax(max_response)
     disp_row = ((max_pos_y[0, 0, sind] + m.pi) % (2 * m.pi) - m.pi) / (2 * m.pi) * use_sz[0]
     disp_col = ((max_pos_x[0, 0, sind] + m.pi) % (2 * m.pi) - m.pi) / (2 * m.pi) * use_sz[1]
+    #  --> ALL MATCHES MATLAB NOW :)
 
     return disp_row, disp_col, sind
