@@ -173,8 +173,13 @@ def BACF_optimized(params):
                     get_pixels(im, pos, np.round(sz * currentScaleFactor * scaleFactors[scale_ind]), sz)
 
             feat_term2, _ = get_features(multires_pixel_template, features, global_feat_params, None)
-            xtf = np.fft.fft2(np.multiply(feat_term2, cos_window[:,:,None,None]))
-            responsef = np.sum(np.multiply(np.conj(g_f)[:,:,:,None], xtf), axis=2)
+            xtf = np.zeros(feat_term2.shape, dtype=complex)
+            for m in range(0, feat_term2.shape[2]):
+                for n in range(0, feat_term2.shape[3]):
+                    xtf[:,:,m,n] = np.fft.fft2(np.multiply(feat_term2[:,:,m,n], cos_window[:,:]))  # --> SAME AS MATLAB
+            responsef = np.sum(np.multiply(np.conj(g_f)[:,:,:,None], xtf), axis=2)  # --> SAME AS MATLAB
+
+            np.zeros(1,2)
 
             # if we undersampled features, we want to interpolate the response to have the same size as the image patch
             if interpolate_response == 2:
@@ -224,7 +229,7 @@ def BACF_optimized(params):
         # With numpy, passing a matrix with dimensions > 2 yields totally different results than in MATLAB. Need to
         # loop it over 3 dimensional term so as to only pass through dims at a time.
         feat_term, _ = get_features(pixels, features, global_feat_params, None)  # --> DISCREPANCY FROM MATLAB
-        xf = np.zeros([feat_term.shape[1], feat_term.shape[1], feat_term.shape[2]])
+        xf = np.zeros([feat_term.shape[1], feat_term.shape[1], feat_term.shape[2]], dtype=complex)
         for n in range(0, feat_term.shape[2]):
             xf[:,:,n] = np.fft.fft2(np.multiply(feat_term[:,:,n,0], cos_window[:,:]))  # THE FFT2 is causing a difference!!!
         if frame == 0:
@@ -242,12 +247,12 @@ def BACF_optimized(params):
         i = 1
 
         T = np.prod(use_sz)
-        S_xx = np.sum(np.multiply(model_xf.conj(), model_xf), axis=2)
+        S_xx = np.sum(np.multiply(model_xf.conj(), model_xf), axis=2)  # --> Same as Matlab
         params['admm_iterations'] = 2
 
         while i <= params['admm_iterations']:
             # Solve for G
-            B = S_xx + (T * mu)
+            B = S_xx + (T * mu)  # --> Same as Matlab
             S_lx = np.sum(np.multiply(model_xf.conj(), l_f), axis=2)
             S_hx = np.sum(np.multiply(model_xf.conj(), h_f), axis=2)
             g_f = (((1 / (T * mu)) * np.multiply(yf[:,:,None], model_xf)) - ((1 / mu) * l_f) + h_f) - \
@@ -256,15 +261,20 @@ def BACF_optimized(params):
                              (np.multiply(model_xf, S_hx[:,:,None]))), B[:,:,None])
 
             # solve for H
-            h = (T / ((mu * T) + params['admm_lambda'])) * np.fft.ifft2((mu * g_f) + l_f)
+            h = np.zeros([g_f.shape[0], g_f.shape[1], g_f.shape[2]], dtype=complex)
+            for n in range(0, g_f.shape[2]):
+                h[:,:,n] = (T / ((mu * T) + params['admm_lambda'])) * np.fft.ifft2((mu * g_f[:,:,n]) + l_f[:,:,n])
+
             [sx, sy, h] = get_subwindow_no_window(h, np.floor(use_sz / 2), small_filter_sz)
-            t = np.zeros([int(use_sz[0]), int(use_sz[1]), h.shape[2]])
-            t = t.astype('float32')
+            t = np.zeros([int(use_sz[0]), int(use_sz[1]), h.shape[2]], dtype=complex)
             t[int(sx[0]):int(sx[-1])+1, int(sy[0]):int(sy[-1])+1, :] = h
-            h_f = np.fft.fft2(t)
+
+            h_f = np.zeros([t.shape[1], t.shape[1], t.shape[2]], dtype=complex)
+            for n in range(0, t.shape[2]):
+                h_f[:,:,n] = np.fft.fft2(t[:,:,n])
 
             # update L
-            l_f = l_f + (mu * (g_f - h_f))
+            l_f = l_f + (mu * (g_f - h_f))  # --> SAME AS MATLAB :)
 
             # update mu- betha = 10
             mu = min(betha * mu, mumax)
@@ -310,7 +320,6 @@ def BACF_optimized(params):
                 FPS_str = 'FPS: ' + str(1 / (elapsed / loop_frame))
                 ax.annotate(frame_str, [20, 30], color='r', backgroundcolor='w')
                 ax.annotate(FPS_str, [20, 60], color='r', backgroundcolor='w', fontsize=16)
-            np.zeros(1,2)
 
         loop_frame += 1
 
