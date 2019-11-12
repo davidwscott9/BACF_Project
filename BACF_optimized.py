@@ -322,6 +322,7 @@ def BACF_optimized(params):
                 ax.annotate(frame_str, [20, 30], color='r', backgroundcolor='w')
                 ax.annotate(FPS_str, [20, 60], color='r', backgroundcolor='w', fontsize=16)
 
+        # For debugging
         loop_frame += 1
 
         if frame == 1:
