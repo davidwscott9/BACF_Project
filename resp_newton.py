@@ -11,7 +11,7 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
 
     row = np.zeros(len(col))
     for i in range(0, len(col)):
-        row[i] = max_row[col[i], i]
+        row[i] = max_row[col[i]-1, i]
     row = row + 1  # match MATLAB indexing for now
 
     trans_row = (row - 1 + np.floor((use_sz[0] - 1) / 2)) % use_sz[0] - np.floor((use_sz[0] - 1) / 2)
