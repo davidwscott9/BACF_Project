@@ -146,6 +146,7 @@ def BACF_optimized(params):
     # allocate memory for multi-scale tracking
     multires_pixel_template = np.zeros([int(sz[0]), int(sz[1]), im.shape[2], nScales], dtype=np.uint8)
     small_filter_sz = np.floor(base_target_sz / featureRatio)  # --> SAME AS MATLAB
+    start_time = time.time()
 
     loop_frame = 0
     for frame in range(0, len(s_frames)):  # S_FRAMES NEEDS TO BE A NP ARRAY FOR .SIZE TO WORK
@@ -162,9 +163,6 @@ def BACF_optimized(params):
 
         if im.shape[2] > 1 and colorImage is False:
             im = im[:,:,0]
-
-        start_time = time.time()   # LATER USE elapsed = time.time() - t
-        elapsed = 0
 
         # do not estimate translation and scaling on the first frame, since we just want to initialize the tracker there
         if frame > 0:
@@ -286,7 +284,8 @@ def BACF_optimized(params):
         # save position and calculate FPS
         rect_position[loop_frame, :] = np.concatenate((pos[1::-1] - np.floor(target_sz[1::-1] / 2), target_sz[1::-1]))  # should be 1x4
 
-        elapsed = elapsed + (time.time() - start_time)
+        elapsed = time.time() - start_time
+        print(elapsed)
 
         # visualization
         if visualization == 1:
@@ -298,29 +297,38 @@ def BACF_optimized(params):
                 fig, ax = plt.subplots(1, num='Tracking')
                 ax.imshow(im_to_show)  # MATLAB CODE HAS IMAGESC INSTEAD OF IMSHOW. HOPEFULLY NOT A BIG DIFFERENCE
                 rect = patches.Rectangle(rect_position_vis[0:2], rect_position_vis[2], rect_position_vis[3],
-                                     linewidth=2, edgecolor='g', facecolor='none')
+                                     linewidth=3, edgecolor='g', facecolor='none')
                 ax.add_patch(rect)
                 ax.annotate(str(frame + 1), [10, 10], color='c')
                 ax.axis('off')  # remove axis values
                 ax.axis('image')  # scale image appropriately
                 ax.set_position([0, 0, 1, 1])
+                fig.show()
+                fig.canvas.draw()
             else:
+                ax.clear()
                 resp_sz = np.round(sz * currentScaleFactor * scaleFactors[scale_ind])
                 xs = np.floor(old_pos[1]) + (np.arange(1, resp_sz[1] + 1)) - np.floor(resp_sz[1] / 2)
                 ys = np.floor(old_pos[0]) + (np.arange(1, resp_sz[0] + 1)) - np.floor(resp_sz[0] / 2)
                 sc_ind = np.floor((nScales - 1) / 2)  # NOT INCLUDING PLUS 1 SINCE IT'S AN INDEX
 
                 ax.imshow(im_to_show)
+                ax.axis('off')  # remove axis values
+                ax.axis('image')  # scale image appropriately
+                ax.set_position([0, 0, 1, 1])
                 im_overlay = np.fft.fftshift(response[:,:,int(sc_ind)])
                 ax.imshow(im_overlay, extent=[xs[0], xs[-1], ys[0], ys[-1]],
                           alpha=0.2, cmap='hsv')
+                rect.remove()  # remove previous rectangle each time
                 rect = patches.Rectangle(rect_position_vis[0:2], rect_position_vis[2], rect_position_vis[3],
-                                         linewidth=2, edgecolor='g', facecolor='none')
+                                         linewidth=3, edgecolor='g', facecolor='none')
                 ax.add_patch(rect)
                 frame_str = '# Frame: ' + str(loop_frame + 1) + ' / ' + str(num_frames)
                 FPS_str = 'FPS: ' + str(1 / (elapsed / loop_frame))
                 ax.annotate(frame_str, [20, 30], color='r', backgroundcolor='w')
                 ax.annotate(FPS_str, [20, 60], color='r', backgroundcolor='w', fontsize=16)
+                fig.show()
+                fig.canvas.draw()  # used to update the plot in real-time
 
         # For debugging
         loop_frame += 1
