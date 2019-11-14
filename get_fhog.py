@@ -21,9 +21,11 @@ def get_fhog(im, fparam, gparam):
     if num_images == 1:
         # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
         # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
-        hog_image = fhog_python(np.uint8(im[:, :, :]), gparam['cell_size'], nOrients, None, None)
+        if nOrients == 9:
+            hog_image = fhog_python(np.uint8(im[:, :, :]), gparam['cell_size'], nOrients, None, None)
+        elif nOrients == 32:
+            hog_image = hog_matlab(0)
         # hog_image = fhog_dlib(np.uint8(im[:, :, :]), gparam['cell_size'], nOrients, None, None)
-        # hog_image = hog_matlab(0)
 
         # # the last dimension is all 0 so we can discard it
         # feature_image[:, :, :] = hog_image[:, :, 0:-1]
@@ -35,8 +37,10 @@ def get_fhog(im, fparam, gparam):
         for k in range(0, num_images):
             # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
             # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
-            hog_image = fhog_python(np.uint8(im[:, :, :, k]), gparam['cell_size'], nOrients, None, None)
-            # hog_image = hog_matlab(k+1)
+            if nOrients == 9:
+                hog_image = fhog_python(np.uint8(im[:, :, :, k]), gparam['cell_size'], nOrients, None, None)
+            elif nOrients == 32:
+                hog_image = hog_matlab(k+1)
 
             # the last dimension is all 0 so we can discard it
             feature_image[:, :, :, k] = hog_image[:, :, :]
