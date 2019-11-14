@@ -331,9 +331,8 @@ def BACF_optimized(params):
 
         # For debugging
         loop_frame += 1
-
-        if frame == 1:
-            np.zeros(1,2)
+        # if frame == 20:  # For debugging. Stop after x iterations
+        #     np.zeros(1,2)
 
     # Save results
     fps = loop_frame / elapsed
