@@ -6,8 +6,8 @@ def get_fhog(im, fparam, gparam):
     # from fhog_dlib import fhog_dlib
     from hog_matlab import hog_matlab
 
-    if fparam['nDim'] == 9:
-        nOrients = 9
+    if fparam['nDim'] != 31:
+        nOrients = fparam['nDim']
     elif fparam['nDim'] == 31:
         nOrients = 32
 
@@ -21,10 +21,15 @@ def get_fhog(im, fparam, gparam):
     if num_images == 1:
         # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
         # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
-        if nOrients == 9:
+        if nOrients != 32:
             hog_image = fhog_python(np.uint8(im[:, :, :]), gparam['cell_size'], nOrients, None, None)
         elif nOrients == 32:
-            hog_image = hog_matlab(0)
+            if im[0, 0, 0] == 189:
+                hog_image = hog_matlab(0)
+            elif im[0,0,0] == 186:
+                hog_image = hog_matlab(6)
+            elif im[0,0,0] == 182:
+                hog_image = hog_matlab(12)
         # hog_image = fhog_dlib(np.uint8(im[:, :, :]), gparam['cell_size'], nOrients, None, None)
 
         # # the last dimension is all 0 so we can discard it
@@ -37,10 +42,13 @@ def get_fhog(im, fparam, gparam):
         for k in range(0, num_images):
             # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
             # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
-            if nOrients == 9:
+            if nOrients != 32:
                 hog_image = fhog_python(np.uint8(im[:, :, :, k]), gparam['cell_size'], nOrients, None, None)
             elif nOrients == 32:
-                hog_image = hog_matlab(k+1)
+                if im[0,0,0,0] == 50:
+                    hog_image = hog_matlab(k+7)  # THIS IS FOR THE FRAME=2 ITERATION
+                else:
+                    hog_image = hog_matlab(k+1)  # THIS IS FOR THE FRAME=1 ITERATION
 
             # the last dimension is all 0 so we can discard it
             feature_image[:, :, :, k] = hog_image[:, :, :]
