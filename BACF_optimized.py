@@ -285,7 +285,6 @@ def BACF_optimized(params):
         rect_position[loop_frame, :] = np.concatenate((pos[1::-1] - np.floor(target_sz[1::-1] / 2), target_sz[1::-1]))  # should be 1x4
 
         elapsed = time.time() - start_time
-        print(elapsed)
 
         # visualization
         if visualization == 1:
