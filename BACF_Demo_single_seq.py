@@ -6,7 +6,7 @@ import numpy as np
 # Load video information
 base_path = './seq'
 video = 'Bolt'
-
+# video = 'Basketball'
 video_path = base_path + '/' + video
 [seq, ground_truth] = load_video_info(video_path)
 seq['VidName'] = video
