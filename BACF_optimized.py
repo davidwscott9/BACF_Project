@@ -121,6 +121,7 @@ def BACF_optimized(params):
     
     if im.shape[2] > 1 and colorImage is False:
         im = im[:,:,0]
+        im = im.reshape([im.shape[0], im.shape[1], 1])
     
     if nScales > 0:
         scale_exp = np.arange(-1 * np.floor((nScales - 1) / 2), np.ceil((nScales - 1) / 2) + 1)
@@ -163,6 +164,7 @@ def BACF_optimized(params):
 
         if im.shape[2] > 1 and colorImage is False:
             im = im[:,:,0]
+            im = im.reshape([im.shape[0], im.shape[1], 1])
 
         # do not estimate translation and scaling on the first frame, since we just want to initialize the tracker there
         if frame > 0:
@@ -172,9 +174,9 @@ def BACF_optimized(params):
 
             feat_term2, _ = get_features(multires_pixel_template, features, global_feat_params, None)
             xtf = np.zeros(feat_term2.shape, dtype=complex)
-            for m in range(0, feat_term2.shape[2]):
+            for p in range(0, feat_term2.shape[2]):
                 for n in range(0, feat_term2.shape[3]):
-                    xtf[:,:,m,n] = np.fft.fft2(np.multiply(feat_term2[:,:,m,n], cos_window[:,:]))  # --> SAME AS MATLAB
+                    xtf[:,:,p,n] = np.fft.fft2(np.multiply(feat_term2[:,:,p,n], cos_window[:,:]))  # --> SAME AS MATLAB
             responsef = np.sum(np.multiply(np.conj(g_f)[:,:,:,None], xtf), axis=2)  # --> SAME AS MATLAB
 
             # if we undersampled features, we want to interpolate the response to have the same size as the image patch
@@ -291,7 +293,7 @@ def BACF_optimized(params):
             rect_position_vis = np.concatenate((pos[1::-1] - (target_sz[1::-1] / 2), target_sz[1::-1]))  # should be 1x4
             im_to_show = im / 255
             if im_to_show.shape[2] == 1:
-                np.tile(im_to_show, [1, 1, 3])
+                im_to_show = np.tile(im_to_show, [1, 1, 3])  # if grayscale, ensure it plots image in grayscale
             if frame == 0:
                 fig, ax = plt.subplots(1, num='Tracking')
                 ax.imshow(im_to_show)  # MATLAB CODE HAS IMAGESC INSTEAD OF IMSHOW. HOPEFULLY NOT A BIG DIFFERENCE
