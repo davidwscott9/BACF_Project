@@ -11,6 +11,8 @@ def get_fhog(im, fparam, gparam):
     elif fparam['nDim'] == 31:
         nOrients = 32
 
+    if len(im.shape) == 2:
+        im = im.reshape([im.shape[0], im.shape[1], 1])
     if len(im.shape) == 3:
         [im_height, im_width, num_im_chan] = im.shape
         num_images = 1

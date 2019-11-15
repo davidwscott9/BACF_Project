@@ -15,4 +15,6 @@ def get_pixels(im, pos, sz, resize_target):
     im_patch = im[int(min(ys)):int(max(ys))+1, int(min(xs)):int(max(xs)+1), :]
     resized_patch = cv2.resize(im_patch, (int(resize_target[0]), int(resize_target[1])))
 
+    if len(resized_patch.shape) == 2:
+        resized_patch = resized_patch.reshape([resized_patch.shape[0], resized_patch.shape[1], 1])
     return resized_patch

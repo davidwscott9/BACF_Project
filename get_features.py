@@ -4,6 +4,9 @@ def get_features(image, features, gparams, fg_size):
     from get_fhog import get_fhog
     # IGNORING IF STATEMENT. ASSUMING IT JUST IS A PYTHON DICT
 
+    if len(image.shape) == 2:
+        image = image.reshape([image.shape[0], image.shape[1], 1])
+
     if len(image.shape) == 3:
         [im_height, im_width, num_im_chan] = image.shape
         num_images = 1
