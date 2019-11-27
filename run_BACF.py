@@ -37,7 +37,8 @@ def run_BACF(seq, video_path, lr):
     scale_step = 1.01
 
     # size, position, frames initialization
-    wsize = np.array([seq['init_rect'][3], seq['init_rect'][2]])
+    wsize = np.array([seq['init_rect'][3], seq['init_rect'][2]])  # dimensions width by height of initial bounding box
+    # Dimensions y by x of initial bounding box centre-point
     init_pos = np.array([seq['init_rect'][1], seq['init_rect'][0]]) + np.floor(wsize / 2)
     s_frames = seq['s_frames']
     no_fram = seq['en_frame'] - seq['st_frame'] + 1
