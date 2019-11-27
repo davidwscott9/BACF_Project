@@ -42,7 +42,7 @@ def BACF_optimized(params):
                                                   max(1, np.ceil(m.sqrt(np.prod(init_target_sz * search_area_scale) /
                                                                        (params['t_global']['cell_selection_thresh'] *
                                                                         filter_max_area)))))
-            featureRatio = params['t_global_cell']['cell_size']
+            featureRatio = params['t_global']['cell_size']
             search_area = np.prod(init_target_sz / featureRatio * search_area_scale)
 
     global_feat_params = params['t_global']
@@ -340,8 +340,8 @@ def BACF_optimized(params):
 
         # For debugging
         loop_frame += 1
-        if frame == 110:  # For debugging. Stop after x iterations
-            np.zeros(1,2)
+        # if frame == 20:  # For debugging. Stop after x iterations
+            # np.zeros(1,2)
 
     # Save results
     fps = loop_frame / elapsed
