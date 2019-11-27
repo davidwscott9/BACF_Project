@@ -13,7 +13,7 @@ def BACF_optimized(params):
     from resp_newton import resp_newton
     from get_subwindow_no_window import get_subwindow_no_window
     # Setting parameters for local use.
-    search_area_scale = params['search_area_scale']
+    search_area_scale = params['search_area_scale']  # size of training/detection area proportional to the target size
     output_sigma_factor = params['output_sigma_factor']
     learning_rate = params['learning_rate']
     filter_max_area = params['filter_max_area']
@@ -24,8 +24,8 @@ def BACF_optimized(params):
     features = params['t_features']
     video_path = params['video_path']
     s_frames = params['s_frames']
-    pos = np.floor(params['init_pos'])
-    target_sz = np.floor(params['wsize'])
+    pos = np.floor(params['init_pos'])  # initial centre-point (y by x) of target bounding box
+    target_sz = np.floor(params['wsize'])  # initial height and height of target bounding box
 
     visualization = params['visualization']
     num_frames = params['no_fram']
@@ -71,6 +71,7 @@ def BACF_optimized(params):
     use_sz = np.floor(sz / featureRatio)
 
     # construct the label function- correlation output, 2D gaussian function, with a peak located upon the target
+    # np.roll acts a circular shift operator. This is used to compute all possible patches in the entire frame
     output_sigma = m.sqrt(np.prod(np.floor(base_target_sz / featureRatio))) * output_sigma_factor
     rg = np.roll(np.arange(-1 * np.floor((use_sz[0] - 1) / 2), np.ceil((use_sz[0] - 1)/2) + 1),
                  int(-1 * np.floor((use_sz[0] - 1) / 2)))
@@ -79,7 +80,7 @@ def BACF_optimized(params):
     [rs, cs] = np.meshgrid(rg, cg)  # MAY BE ANOTHER CANDIDATE ERROR SOURCE
     rs = rs.T
     cs = cs.T
-    # MAY NEED TO CONVERT VARIABLES TO NP ARRAYS IF GETTING ERRORS BECAUSE I'M USING NP.POWER, etc.
+    # y is the desired correlation response at each point within the size of the filter
     y = np.exp(-0.5 * ((np.power(rs, 2) + np.power(cs, 2)) / np.power(output_sigma, 2)))
     yf = np.fft.fft2(y)  # fast fourier transform of y --> SAME AS MATLAB
 
@@ -168,6 +169,9 @@ def BACF_optimized(params):
 
         # do not estimate translation and scaling on the first frame, since we just want to initialize the tracker there
         if frame > 0:
+
+            # The filter is applied on multiple resolutions of the search area. This is used to determine any changes in
+            # scale of the target object
             for scale_ind in range(0, nScales):
                 multires_pixel_template[:, :, :, scale_ind] = \
                     get_pixels(im, pos, np.round(sz * currentScaleFactor * scaleFactors[scale_ind]), sz)
@@ -256,12 +260,15 @@ def BACF_optimized(params):
             B = S_xx + (T * mu)  # --> Same as Matlab
             S_lx = np.sum(np.multiply(model_xf.conj(), l_f), axis=2)
             S_hx = np.sum(np.multiply(model_xf.conj(), h_f), axis=2)
+
+            # equation (10)
             g_f = (((1 / (T * mu)) * np.multiply(yf[:,:,None], model_xf)) - ((1 / mu) * l_f) + h_f) - \
                   np.divide((((1 / (T * mu)) * np.multiply(model_xf, np.multiply(S_xx, yf)[:,:,None])) -
                              ((1 / mu) * np.multiply(model_xf, S_lx[:,:,None])) +
                              (np.multiply(model_xf, S_hx[:,:,None]))), B[:,:,None])
 
             # solve for H
+            # Equation (6)
             h = np.zeros([g_f.shape[0], g_f.shape[1], g_f.shape[2]], dtype=complex)
             for n in range(0, g_f.shape[2]):
                 h[:,:,n] = (T / ((mu * T) + params['admm_lambda'])) * np.fft.ifft2((mu * g_f[:,:,n]) + l_f[:,:,n])
@@ -333,8 +340,8 @@ def BACF_optimized(params):
 
         # For debugging
         loop_frame += 1
-        # if frame == 20:  # For debugging. Stop after x iterations
-        #     np.zeros(1,2)
+        if frame == 110:  # For debugging. Stop after x iterations
+            np.zeros(1,2)
 
     # Save results
     fps = loop_frame / elapsed
