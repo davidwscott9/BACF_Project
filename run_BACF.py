@@ -1,4 +1,4 @@
-def run_BACF(seq, video_path, lr):
+def run_BACF(seq, video_path, lr, visualization):
 
     import math as m
     import numpy as np
@@ -50,7 +50,7 @@ def run_BACF(seq, video_path, lr):
     admm_lambda = 0.01
 
     # Debug and visualization
-    visualization = 1
+    # visualization = 1 ## ADDED AS VARIABLE IN THE FUNCTION
 
     # combine variables into param dictionary
     params = {'video_path': video_path, 't_features': t_features, 't_global': t_global,
