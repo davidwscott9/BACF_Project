@@ -201,6 +201,10 @@ def BACF_optimized(params):
             elif interpolate_response == 4:  # IF GETTING AN ERROR WITH SIND, MAY BE BECAUSE IT NEEDS TO INDEX AT SIND-1
                 [disp_row, disp_col, sind] = resp_newton(response, responsef_padded, newton_iterations, ky, kx, use_sz)
 
+            # Check if the target has completely gone off the frame
+            if np.isnan(disp_row) or np.isnan(disp_col):
+                break
+
             # MAY NOT NEED THIS  SECTION. TOO MANY CONVERSIONS. SKIPPING FOR NOW. SEEMS LIKE interpolate_response = 4 always
             #else:
                # [row, col, sind] = np.unravel_index(response.shape, find)
@@ -296,7 +300,7 @@ def BACF_optimized(params):
         elapsed = time.time() - start_time
 
         # visualization
-        if visualization == 1:
+        if visualization == 1:  # SET ANOTHER INPUT IN RUN_BACF TO INCLUDE VISUALIZATION as 1 or 0
             rect_position_vis = np.concatenate((pos[1::-1] - (target_sz[1::-1] / 2), target_sz[1::-1]))  # should be 1x4
             im_to_show = im / 255
             if im_to_show.shape[2] == 1:
