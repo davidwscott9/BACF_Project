@@ -5,8 +5,10 @@ import numpy as np
 
 # Load video information
 base_path = './seq'
-video = 'Bolt'
+# video = 'Bolt'
 # video = 'Basketball'
+# video = 'Car4'
+video = 'Bolt'
 video_path = base_path + '/' + video
 [seq, ground_truth] = load_video_info(video_path)
 seq['VidName'] = video
@@ -18,7 +20,7 @@ gt_boxes = np.concatenate([ground_truth[:, 0:2],
 
 # Run BACF main function
 learning_rate = 0.013
-results = run_BACF(seq, video_path, learning_rate)
+results = run_BACF(seq, video_path, learning_rate, visualization=1)
 
 # compute the OP
 pd_boxes = results['res']
