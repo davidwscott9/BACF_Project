@@ -1,9 +1,16 @@
-def load_video_info(video_path):
+def load_video_info(video_path, test_type):
 
     import numpy as np
     import os
     from os import listdir
-    file_str = video_path + '/groundtruth_rect.txt'
+
+    if test_type == 'TC128':
+        files = listdir(video_path)
+        gt = [s for s in files if "gt.txt" in s][0]
+        file_str = video_path + '/' + gt
+
+    else:
+        file_str = video_path + '/groundtruth_rect.txt'
 
     lines = open(file_str).read().splitlines()
     ground_truth = np.array(lines[0].split(","))
