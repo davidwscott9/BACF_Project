@@ -6,8 +6,8 @@ def benchmark_tests(test_type):
     from os import listdir
     import matplotlib.pyplot as plt
 
-    # MIGHT BE BETTER TO MAKE THIS A GENERAL TESTING FUNCTION WITH PARAMS(str('TEST'))
-    # HAVE IF STATEMENTS FOR WHAT TO DO FOR EACH TEST TYPE
+    if test_type != 'OTB50' or 'OTB100' or 'TC128':
+        raise ValueError("test_type must be either 'OTB50', 'OTB100', or 'TC128'")
 
     # Load video information
     base_path = './seq/'
