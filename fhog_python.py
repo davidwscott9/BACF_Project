@@ -1,6 +1,7 @@
 def fhog_python(I, binSize, nOrients, clip, crop):
 
     import cv2
+    binSize = int(binSize)
     block_size = 1
     hog = cv2.HOGDescriptor(_winSize=(I.shape[1] // binSize * binSize,
                                   I.shape[0] // binSize * binSize),
