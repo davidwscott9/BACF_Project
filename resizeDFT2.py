@@ -1,8 +1,13 @@
 def resizeDFT2(inputdft, desiredSize):
-
+    """
+    Resizes a discrete fourier transform (dft) input to a desired size
+    :param inputdft: numpy array of original dft
+    :param desiredSize: list of the form [height, width]
+    :return: numpy array of the resized dft
+    """
     import numpy as np
     [imh, imw, n1] = inputdft.shape
-    n2 =1  # This could be a potential error source, but I think n2 will always be 1
+    n2 = 1
     imsz = [imh, imw]
 
     if desiredSize[0] != imsz[0] or desiredSize[1] != imsz[1]:
@@ -18,8 +23,8 @@ def resizeDFT2(inputdft, desiredSize):
         resizeddft[0:mids[0], 0:mids[1], :, :] = scaling * inputdft[0:mids[0], 0:mids[1], :, :]
         resizeddft[0:mids[0], (-1 - mide[1])::, :, :] = scaling * inputdft[0:mids[0], (-1 - mide[1])::, :, :]
         resizeddft[(-1 - mide[0])::, 0:mids[1], :, :] = scaling * inputdft[(-1 - mide[0])::, 0:mids[1], :, :]
-        resizeddft[(-1 - mide[0])::, (-1 - mide[1])::, :, :] = \
-            scaling * inputdft[(-1 - mide[0])::, (-1 - mide[1])::, :, :]
+        resizeddft[(-1 - mide[0])::, (-1 - mide[1])::, :, :] = scaling * \
+                                                               inputdft[(-1 - mide[0])::, (-1 - mide[1])::, :, :]
     else:
         resizeddft = inputdft
 
