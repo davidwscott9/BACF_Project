@@ -6,7 +6,7 @@ def benchmark_tests(test_type):
     from os import listdir
     import matplotlib.pyplot as plt
 
-    if test_type != 'OTB50' and 'OTB100' and 'TC128':
+    if test_type != 'OTB50' and test_type != 'OTB100' and test_type != 'TC128':
         raise ValueError("test_type must be either 'OTB50', 'OTB100', or 'TC128'")
 
     # Load video information
