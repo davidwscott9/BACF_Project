@@ -1,4 +1,13 @@
 def load_video_info(video_path, test_type):
+    """
+    This function loads video info necessary for running the object-tracker given the video path and the test type the
+    video is from.
+    :param video_path: A string of the filepath to the video
+    :param test_type: A string of either 'OTB50', 'OTB100', 'TC128'
+    :return:
+    dict: contains sequence length, an initial bounding box position, and a list of image files
+    numpy array: a list of the ground truth bounding box at each frame
+    """
 
     import numpy as np
     import os
