@@ -1,5 +1,12 @@
 def BACF_optimized(params):
-
+    """
+    This function implements the background-aware correlation filter visual object tracker.
+    :param params: dict: contains the following keys: 'video_path', 't_features', 't_global', 'search_area_shape',
+    'search_area_scale', 'filter_max_area', 'learning_rate', 'output_sigma_factor', 'interpolate_response',
+    'newton_iterations', 'number_of_scales', 'scale_step', 'wsize', 'init_pos', 's_frames', 'no_fram', 'seq_st_frame',
+    'seq_en_frame', 'admm_iterations', 'admm_lambda', 'visualization'
+    :return: dict: results containing bounding box position in the key 'res' and the frame rate in the key 'fps'
+    """
     import math as m
     import numpy as np
     import cv2
@@ -349,6 +356,6 @@ def BACF_optimized(params):
 
     # Save results
     fps = loop_frame / elapsed
-    results = {'type': 'rect', 'res': rect_position, 'fps': fps}
+    results = {'res': rect_position, 'fps': fps}
 
     return results
