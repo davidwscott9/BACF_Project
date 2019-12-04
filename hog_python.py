@@ -1,5 +1,11 @@
-def fhog_python(I, binSize, nOrients, clip, crop):
-
+def hog_python(I, binSize, nOrients):
+    """
+    This function computes the HOG descriptors for a given image
+    :param I: The input image
+    :param binSize: int: size of the pixel bin
+    :param nOrients: int: number of orientations. Standard is 9
+    :return: numpy array: HOG features
+    """
     import cv2
     binSize = int(binSize)
     block_size = 1

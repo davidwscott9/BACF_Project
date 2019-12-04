@@ -1,9 +1,13 @@
-def get_fhog(im, fparam, gparam):
-
+def get_hog(im, fparam, gparam):
+    """
+    This function acquires and formats HOG features for a given input image
+    :param im: The original input image, either grayscale or color
+    :param fparam: dict: contains the number of orientations for the HOG descriptor
+    :param gparam: dict: contains the cell (bin) size for the HOG descriptor
+    :return: HOG features of the input image, im
+    """
     import numpy as np
-    from fhog import fhog
-    from fhog_python import fhog_python
-    # from fhog_dlib import fhog_dlib
+    from hog_python import hog_python
     from hog_matlab import hog_matlab
 
     if fparam['nDim'] != 31:
@@ -24,7 +28,7 @@ def get_fhog(im, fparam, gparam):
         # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
         # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
         if nOrients != 32:
-            hog_image = fhog_python(np.uint8(im[:, :, :]), gparam['cell_size'], nOrients, None, None)
+            hog_image = hog_python(np.uint8(im[:, :, :]), gparam['cell_size'], nOrients)
         elif nOrients == 32:
             if im[0, 0, 0] == 189:
                 hog_image = hog_matlab(0)
@@ -45,7 +49,7 @@ def get_fhog(im, fparam, gparam):
             # KEY THING HERE: fhog_python DOESN"T USE FHOG AND ONLY TAKES IN LIMITED PARAMETERS. fhog RUNS THE ACTUAL FHOG
             # SCRIPT. USE THAT IF POSSIBLE BECAUSE FASTER, WONT AFFECT FPS, AND TAKES IN EXACT SAME PARAMETERS
             if nOrients != 32:
-                hog_image = fhog_python(np.uint8(im[:, :, :, k]), gparam['cell_size'], nOrients, None, None)
+                hog_image = hog_python(np.uint8(im[:, :, :, k]), gparam['cell_size'], nOrients)
             elif nOrients == 32:
                 if im[0,0,0,0] == 50:
                     hog_image = hog_matlab(k+7)  # THIS IS FOR THE FRAME=2 ITERATION

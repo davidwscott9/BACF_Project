@@ -7,10 +7,10 @@ def get_features(image, features, gparams, fg_size):
     :param fg_size: List of length=2 detailing the size of the figure
     :return:
     numpy array: 4D array detailing the features of the image
-    list: 1x2 list detailing the image image size
+    list: list of the form [height, width] detailing the image image size
     """
     import numpy as np
-    from get_fhog import get_fhog
+    from get_hog import get_hog
     # IGNORING IF STATEMENT. ASSUMING IT JUST IS A PYTHON DICT
 
     if len(image.shape) == 2:
@@ -31,13 +31,13 @@ def get_features(image, features, gparams, fg_size):
 
     if fg_size is None or (not fg_size is True):
         if gparams['cell_size'] == -1:
-            fg = get_fhog(image, features['fparams'], gparams)
+            fg = get_hog(image, features['fparams'], gparams)
             fg_size = fg.shape
         else:
             fg_size = [np.floor(im_height / gparams['cell_size']), np.floor(im_width / gparams['cell_size'])]
 
     # IGNORING CELL_SIZE < 0 CASE BECAUSE WHEN WOULD THAT HAPPEN???
-    feature_image = get_fhog(image, features['fparams'], gparams)
+    feature_image = get_hog(image, features['fparams'], gparams)
     if num_images == 1:
         feature_image = feature_image.reshape(feature_image.shape[0], feature_image.shape[1],
                                               feature_image.shape[2], 1)
