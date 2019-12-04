@@ -1,8 +1,11 @@
 def computeIntersectionArea(bb1, bb2):
+    """
+    Computes the intersecting area of two bounding boxes
+    :param bb1: a list of the form [xmin, ymin, xmax, ymax]
+    :param bb2: a list of the form [xmin, ymin, xmax, ymax]
+    :return: the area of intersection
+    """
     from computeArea import computeArea
-    # compute intersection anrea of bb1 and bb2
-    # bb1 and bb2 - bounding boxes
-    # bbi = [xmin ymin xmax ymax] for i=1,2
 
     xmin = max(bb1[0], bb2[0])
     xmax = min(bb1[2], bb2[2])
