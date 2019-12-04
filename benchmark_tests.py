@@ -66,9 +66,10 @@ def benchmark_tests(test_type):
             OP_vid = np.vstack((OP_vid, np.sum(OP >= overlap_threshold, axis=0) / len(OP)))
             FPS_vid = np.vstack((FPS_vid, results['fps']))
 
-    OP_vid = OP_vid * 100
-    OP_vid_avg = np.mean(OP_vid, axis=0)
+    OP_vid = OP_vid * 100  # convert to a percentage
+    OP_vid_avg = np.mean(OP_vid, axis=0)  # compute the average
 
+    # plot the success plots
     fig, ax = plt.subplots(2, 1)
     for j in range(0, len(video_list)):
         ax[0].plot(overlap_threshold, OP_vid[j, :], label=video_list[j])
@@ -83,6 +84,7 @@ def benchmark_tests(test_type):
     title_str = 'Success Plot on ' + test_type
     ax[0].set_title(title_str)
 
+    # print the relevant data for the report
     FPS_avg = np.mean(FPS_vid)
     auc = np.trapz(OP_vid_avg, overlap_threshold)
     print('Average FPS is:', FPS_avg)
