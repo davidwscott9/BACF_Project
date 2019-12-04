@@ -1,5 +1,14 @@
 def get_features(image, features, gparams, fg_size):
-
+    """
+    Obtains the HOG features for a given image or image patch
+    :param image: A grayscale or color image
+    :param features: dict detailing the feature parameters
+    :param gparams: dict detailing HOG parameters
+    :param fg_size: List of length=2 detailing the size of the figure
+    :return:
+    numpy array: 4D array detailing the features of the image
+    list: 1x2 list detailing the image image size
+    """
     import numpy as np
     from get_fhog import get_fhog
     # IGNORING IF STATEMENT. ASSUMING IT JUST IS A PYTHON DICT
