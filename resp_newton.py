@@ -1,5 +1,17 @@
 def resp_newton(response, responsef, iterations, ky, kx, use_sz):
-
+    """
+    Applies Newton's Method to compute the correlation score
+    :param response: numpy array: response in the spatial domain
+    :param responsef: numpy array: response in the frequency domain
+    :param iterations: int: number of iterations
+    :param ky: numpy array: y-dimensions of grid used for correlation score
+    :param kx: numpy array: x-dimesnions of grid used for correlation score
+    :param use_sz: list: 1x2, size of the detection area
+    :return:
+    numpy array: x-dimension of correlation score
+    numpy array: y-dimension of correlation score
+    int: the scale index
+    """
     import numpy as np
     import math as m
     max_resp_row = np.amax(response, axis=0)
@@ -66,6 +78,5 @@ def resp_newton(response, responsef, iterations, ky, kx, use_sz):
     sind = np.argmax(max_response)
     disp_row = ((max_pos_y[0, 0, sind] + m.pi) % (2 * m.pi) - m.pi) / (2 * m.pi) * use_sz[0]
     disp_col = ((max_pos_x[0, 0, sind] + m.pi) % (2 * m.pi) - m.pi) / (2 * m.pi) * use_sz[1]
-    #  --> ALL MATCHES MATLAB NOW :)
 
     return disp_row, disp_col, sind

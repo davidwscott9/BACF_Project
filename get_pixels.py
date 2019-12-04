@@ -1,5 +1,12 @@
 def get_pixels(im, pos, sz, resize_target):
-
+    """
+    This function gets an image patch given an original image, position, size, and resize target
+    :param im: Original, full-size image
+    :param pos: The position of the patch
+    :param sz: list: 1x2 detailing the size of the image
+    :param resize_target: list: 1x2 detailing the target size of the image patch
+    :return: image patch
+    """
     import numpy as np
     import cv2
     xs = np.floor(pos[1]) + np.arange(0, sz[1]) - np.floor(sz[1] / 2)
