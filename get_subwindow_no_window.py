@@ -1,5 +1,12 @@
 def get_subwindow_no_window(im, pos, sz):
-
+    """
+    Obtains a subwindow from an image with replication padding. Adapted from João F. Henriques, 2012
+    http://www.isr.uc.pt/~henriques/
+    :param im: the original image
+    :param pos: list with the form [x,y] - the centre of the subwindow
+    :param sz: list of the form [height, width] - the size of the subwindow
+    :return: subwindow x-dimensions (list), subwindow y-dimensions (list), subwindow (numpy array)
+    """
     import numpy as np
     if len(sz) == 1:
         sz = np.array([sz, sz])
