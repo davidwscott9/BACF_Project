@@ -1,6 +1,5 @@
 def run_BACF(seq, video_path, lr, visualization):
 
-    import math as m
     import numpy as np
     from BACF_optimized import BACF_optimized
     # Default parameters used in the ICCV 2017 BACF paper
@@ -48,9 +47,6 @@ def run_BACF(seq, video_path, lr, visualization):
     # ADMM parameters, number of iterations, and lambda-mu and beta are set in the main function.
     admm_iterations = 2
     admm_lambda = 0.01
-
-    # Debug and visualization
-    # visualization = 1 ## ADDED AS VARIABLE IN THE FUNCTION
 
     # combine variables into param dictionary
     params = {'video_path': video_path, 't_features': t_features, 't_global': t_global,
