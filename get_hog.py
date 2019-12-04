@@ -1,7 +1,8 @@
 def get_hog(im, fparam, gparam):
     """
-    This function acquires and formats HOG features for a given input image
-    :param im: The original input image, either grayscale or color
+    This function acquires and formats HOG features for a given input image. Accepts either a single image or multiple
+    :param im: The original input image, either grayscale or color in the form [im_height, im_width, num_im_chan] if a
+    single image or [im_height, im_width, num_im_chan, num_images] if multiple images
     :param fparam: dict: contains the number of orientations for the HOG descriptor
     :param gparam: dict: contains the cell (bin) size for the HOG descriptor
     :return: HOG features of the input image, im
