@@ -24,6 +24,3 @@ Run benchmark_tests_script.py
 numpy
 matplotlib
 opencv-python
-
-
-## License
