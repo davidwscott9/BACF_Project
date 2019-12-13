@@ -11,8 +11,7 @@ def benchmark_tests(test_type):
 
     # Load video information
     base_path = './seq/'
-    # test_type = 'TC128'  # MIGHT MAKE THIS INTO A FUNCTION AND OTB50 vs 100 IS DETERMINED IN THE SCRIPT
-
+    
     test_path = base_path + test_type
     video_list = listdir(test_path)
 
